@@ -8,6 +8,8 @@
 
 import sys
 
+import monkeytype
+
 from .__pkginfo__ import version as __version__
 
 
@@ -15,7 +17,8 @@ def run_pylint():
     """run pylint"""
     from pylint.lint import Run
     try:
-        Run(sys.argv[1:])
+        with monkeytype.trace():
+            Run(sys.argv[1:])
     except KeyboardInterrupt:
         sys.exit(1)
 
