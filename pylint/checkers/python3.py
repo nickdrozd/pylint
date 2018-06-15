@@ -638,10 +638,6 @@ class Python3Checker(checkers.BaseChecker):
             if isinstance(generator.target, astroid.AssignName)
         }
         scope = node.parent.scope()
-        scope_names = scope.nodes_of_class(
-            astroid.Name,
-            skip_klass=astroid.FunctionDef,
-        )
         has_redefined_assign_name = any(
             assign_name
             for assign_name in
@@ -654,8 +650,11 @@ class Python3Checker(checkers.BaseChecker):
         if has_redefined_assign_name:
             return
 
+        scope_names = scope.nodes_of_class(
+            astroid.Name,
+            skip_klass=astroid.FunctionDef,
+        )
         emitted_for_names = set()
-        scope_names = list(scope_names)
         for scope_name in scope_names:
             if (scope_name.name not in names
                     or scope_name.lineno <= node.lineno
