@@ -817,18 +817,22 @@ accessed. Python regular expressions are accepted.'}
         if (function_node.is_generator()
                 or function_node.is_abstract(pass_is_abstract=False)):
             return
-        returns = list(function_node.nodes_of_class(astroid.Return,
-                                                    skip_klass=astroid.FunctionDef))
-        if not returns:
+        returns = function_node.nodes_of_class(astroid.Return,
+                                               skip_klass=astroid.FunctionDef)
+        try:
+            first = next(returns)
+        except StopIteration:
             self.add_message('assignment-from-no-return', node=node)
+            return
+
+        if not _check_return_node(first):
+            return
+
+        for rnode in returns:
+            if not _check_return_node(rnode):
+                break
         else:
-            for rnode in returns:
-                if not (isinstance(rnode.value, astroid.Const)
-                        and rnode.value.value is None
-                        or rnode.value is None):
-                    break
-            else:
-                self.add_message('assignment-from-none', node=node)
+            self.add_message('assignment-from-none', node=node)
 
     def _check_uninferable_call(self, node):
         """
@@ -1431,3 +1435,11 @@ def register(linter):
     """required method to auto register this checker """
     linter.register_checker(TypeChecker(linter))
     linter.register_checker(IterableChecker(linter))
+
+
+def _check_return_node(rnode):
+    return (
+        rnode.value.value is None
+        if isinstance(rnode.value, astroid.Const)
+        else rnode.value is None
+    )

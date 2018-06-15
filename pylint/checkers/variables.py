@@ -766,7 +766,7 @@ class VariablesChecker(BaseChecker):
             regex = authorized_rgx
         return regex and regex.match(name)
 
-    def _check_is_unused(self, name, node, stmt, global_names, nonlocal_names):
+    def _check_is_unused(self, name, node, stmt):
         # Ignore some special names specified by user configuration.
         if self._is_name_ignored(stmt, name):
             return
@@ -783,6 +783,7 @@ class VariablesChecker(BaseChecker):
             return
         if isinstance(stmt, (astroid.Import, astroid.ImportFrom)):
             # Detect imports, assigned to global statements.
+            global_names = _flattened_scope_names(node.nodes_of_class(astroid.Global))
             if global_names and _import_name_is_global(stmt, global_names):
                 return
 
@@ -820,7 +821,7 @@ class VariablesChecker(BaseChecker):
                              confidence=confidence)
         else:
             if stmt.parent and isinstance(stmt.parent, astroid.Assign):
-                if name in nonlocal_names:
+                if name in _flattened_scope_names(node.nodes_of_class(astroid.Nonlocal)):
                     return
 
             if isinstance(stmt, astroid.Import):
@@ -857,10 +858,8 @@ class VariablesChecker(BaseChecker):
         if is_method and node.is_abstract():
             return
 
-        global_names = _flattened_scope_names(node.nodes_of_class(astroid.Global))
-        nonlocal_names = _flattened_scope_names(node.nodes_of_class(astroid.Nonlocal))
         for name, stmts in not_consumed.items():
-            self._check_is_unused(name, node, stmts[0], global_names, nonlocal_names)
+            self._check_is_unused(name, node, stmts[0])
 
     visit_asyncfunctiondef = visit_functiondef
     leave_asyncfunctiondef = leave_functiondef
