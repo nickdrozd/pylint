@@ -1129,10 +1129,14 @@ class PyLintASTWalker(object):
                     visits[cid].append(visit_default)
         # for now we have no "leave_default" method in Pylint
 
-    def walk(self, astroid):
+    def walk(self, astroid, reports=False):
         """call visit events of astroid checkers for the given node, recurse on
         its children, then leave events.
         """
+        if not reports:
+            self._walk(astroid)
+            return
+
         cid = astroid.__class__.__name__.lower()
 
         # Detect if the node is a new name for a deprecated alias.
@@ -1149,7 +1153,29 @@ class PyLintASTWalker(object):
             cb(astroid)
         # recurse on children
         for child in astroid.get_children():
-            self.walk(child)
+            self.walk(child, reports=reports)
+        for cb in leave_events or ():
+            cb(astroid)
+
+    def _walk(self, astroid):
+        """call visit events of astroid checkers for the given node, recurse on
+        its children, then leave events.
+        """
+        cid = astroid.__class__.__name__.lower()
+
+        # Detect if the node is a new name for a deprecated alias.
+        # In this case, favour the methods for the deprecated
+        # alias if any,  in order to maintain backwards
+        # compatibility.
+        visit_events = self.visit_events.get(cid, ())
+        leave_events = self.leave_events.get(cid, ())
+
+        # generate events for this node on each checker
+        for cb in visit_events or ():
+            cb(astroid)
+        # recurse on children
+        for child in astroid.get_children():
+            self._walk(child)
         for cb in leave_events or ():
             cb(astroid)
 

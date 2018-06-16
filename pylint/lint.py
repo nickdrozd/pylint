@@ -767,7 +767,7 @@ class PyLinter(config.OptionsManagerMixIn,
         return path.endswith('.py')
     # pylint: enable=unused-argument
 
-    def check(self, files_or_modules):
+    def check(self, files_or_modules, reports=False):
         """main checking entry: check a list of files or modules from their
         name.
         """
@@ -781,7 +781,7 @@ class PyLinter(config.OptionsManagerMixIn,
             files_or_modules = (files_or_modules,)
 
         if self.config.jobs == 1:
-            self._do_check(files_or_modules)
+            self._do_check(files_or_modules, reports=reports)
         else:
             with _patch_sysmodules():
                 self._parallel_check(files_or_modules)
@@ -882,7 +882,7 @@ class PyLinter(config.OptionsManagerMixIn,
             if checker is not self:
                 checker.stats = self.stats
 
-    def _do_check(self, files_or_modules):
+    def _do_check(self, files_or_modules, reports=False):
         walker = utils.PyLintASTWalker(self)
         _checkers = self.prepare_checkers()
         tokencheckers = [c for c in _checkers
@@ -914,7 +914,7 @@ class PyLinter(config.OptionsManagerMixIn,
             # fix the current file (if the source file was not available or
             # if it's actually a c extension)
             self.current_file = ast_node.file # pylint: disable=maybe-no-member
-            self.check_astroid_module(ast_node, walker, rawcheckers, tokencheckers)
+            self.check_astroid_module(ast_node, walker, rawcheckers, tokencheckers, reports=reports)
             # warn about spurious inline messages handling
             spurious_messages = self.file_state.iter_spurious_suppression_messages(self.msgs_store)
             for msgid, line, args in spurious_messages:
@@ -969,7 +969,7 @@ class PyLinter(config.OptionsManagerMixIn,
             self.add_message('astroid-error', args=(ex.__class__, ex))
 
     def check_astroid_module(self, ast_node, walker,
-                             rawcheckers, tokencheckers):
+                             rawcheckers, tokencheckers, reports=False):
         """Check a module from its astroid representation."""
         try:
             tokens = utils.tokenize_module(ast_node)
@@ -994,7 +994,7 @@ class PyLinter(config.OptionsManagerMixIn,
             for checker in tokencheckers:
                 checker.process_tokens(tokens)
         # generate events to astroid checkers
-        walker.walk(ast_node)
+        walker.walk(ast_node, reports=reports)
         return True
 
     # IAstroidChecker interface #################################################
@@ -1369,7 +1369,7 @@ group are mutually exclusive.'),
         # insert current working directory to the python path to have a correct
         # behaviour
         with fix_import_path(args):
-            linter.check(args)
+            linter.check(args, reports=linter.config.reports)
             linter.generate_reports()
         if do_exit:
             if linter.config.exit_zero:
