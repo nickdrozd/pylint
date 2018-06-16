@@ -33,14 +33,15 @@ class AsyncChecker(checkers.BaseChecker):
                   {'minversion': (3, 5)}),
     }
 
+    _yield_type = astroid.Yield if sys.version_info == (3, 5) else astroid.YieldFrom
+
     def open(self):
         self._ignore_mixin_members = utils.get_global_option(self, 'ignore-mixin-members')
 
     @checker_utils.check_messages('yield-inside-async-function')
     def visit_asyncfunctiondef(self, node):
-        for child in node.nodes_of_class(astroid.Yield):
-            if child.scope() is node and (sys.version_info[:2] == (3, 5) or
-                                          isinstance(child, astroid.YieldFrom)):
+        for child in node.nodes_of_class(self._yield_type):
+            if child.scope() is node:
                 self.add_message('yield-inside-async-function', node=child)
 
     @checker_utils.check_messages('not-async-context-manager')
