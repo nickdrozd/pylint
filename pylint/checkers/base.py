@@ -695,11 +695,12 @@ class BasicErrorChecker(_BasicChecker):
                 if node not in _node.orelse:
                     return
 
-            if isinstance(_node, (astroid.ClassDef, astroid.FunctionDef)):
+            elif isinstance(_node, (astroid.ClassDef, astroid.FunctionDef)):
                 break
-            if (isinstance(_node, astroid.TryFinally)
-                    and node in _node.finalbody
-                    and isinstance(node, astroid.Continue)):
+
+            elif (isinstance(_node, astroid.TryFinally)
+                  and node in _node.finalbody
+                  and isinstance(node, astroid.Continue)):
                 self.add_message('continue-in-finally', node=node)
 
             _node = _node.parent
