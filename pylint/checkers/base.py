@@ -659,16 +659,20 @@ class BasicErrorChecker(_BasicChecker):
         # __init__ was called
         metaclass = infered.metaclass()
         abstract_methods = _has_abstract_methods(infered)
+
         if metaclass is None:
             # Python 3.4 has `abc.ABC`, which won't be detected
             # by ClassNode.metaclass()
-            for ancestor in infered.ancestors():
-                if ancestor.qname() == 'abc.ABC' and abstract_methods:
-                    self.add_message('abstract-class-instantiated',
-                                     args=(infered.name, ),
-                                     node=node)
-                    break
+            if abstract_methods:
+                for ancestor in infered.ancestors():
+                    if ancestor.qname() == 'abc.ABC':
+                        self.add_message('abstract-class-instantiated',
+                                         args=(infered.name, ),
+                                         node=node)
+                        break
+
             return
+
         if metaclass.qname() in ABC_METACLASSES and abstract_methods:
             self.add_message('abstract-class-instantiated',
                              args=(infered.name, ),
