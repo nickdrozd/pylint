@@ -982,8 +982,9 @@ accessed. Python regular expressions are accepted.'}
         # Match the supplied arguments against the function parameters.
 
         # 1. Match the positional arguments.
+        parameter_count = len(parameters)
         for i in range(num_positional_args):
-            if i < len(parameters):
+            if i < parameter_count:
                 parameters[i][1] = True
             elif called.args.vararg is not None:
                 # The remaining positional arguments get assigned to the *args
