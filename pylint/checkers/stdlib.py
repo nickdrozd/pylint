@@ -133,23 +133,23 @@ class StdlibChecker(BaseChecker):
     }
 
     deprecated = {
-        0: [
+        0: {
             'cgi.parse_qs', 'cgi.parse_qsl',
             'ctypes.c_buffer',
             'distutils.command.register.register.check_metadata',
             'distutils.command.sdist.sdist.check_metadata',
             'tkinter.Misc.tk_menuBar',
             'tkinter.Menu.tk_bindForTraversal',
-        ],
+        },
         2: {
-            (2, 6, 0): [
+            (2, 6, 0): {
                 'commands.getstatus',
                 'os.popen2',
                 'os.popen3',
                 'os.popen4',
                 'macostools.touched',
-            ],
-            (2, 7, 0): [
+            },
+            (2, 7, 0): {
                 'unittest.case.TestCase.assertEquals',
                 'unittest.case.TestCase.assertNotEquals',
                 'unittest.case.TestCase.assertAlmostEquals',
@@ -159,51 +159,51 @@ class StdlibChecker(BaseChecker):
                 'xml.etree.ElementTree.Element.getiterator',
                 'xml.etree.ElementTree.XMLParser.getiterator',
                 'xml.etree.ElementTree.XMLParser.doctype',
-            ],
+            },
         },
         3: {
-            (3, 0, 0): [
+            (3, 0, 0): {
                 'inspect.getargspec',
                 'unittest.case.TestCase._deprecate.deprecated_func',
-            ],
-            (3, 1, 0): [
+            },
+            (3, 1, 0): {
                 'base64.encodestring', 'base64.decodestring',
                 'ntpath.splitunc',
-            ],
-            (3, 2, 0): [
+            },
+            (3, 2, 0): {
                 'cgi.escape',
                 'configparser.RawConfigParser.readfp',
                 'xml.etree.ElementTree.Element.getchildren',
                 'xml.etree.ElementTree.Element.getiterator',
                 'xml.etree.ElementTree.XMLParser.getiterator',
                 'xml.etree.ElementTree.XMLParser.doctype',
-            ],
-            (3, 3, 0): [
+            },
+            (3, 3, 0): {
                 'inspect.getmoduleinfo',
                 'logging.warn', 'logging.Logger.warn',
                 'logging.LoggerAdapter.warn',
                 'nntplib._NNTPBase.xpath',
                 'platform.popen',
-            ],
-            (3, 4, 0): [
+            },
+            (3, 4, 0): {
                 'importlib.find_loader',
                 'plistlib.readPlist', 'plistlib.writePlist',
                 'plistlib.readPlistFromBytes',
                 'plistlib.writePlistToBytes',
-            ],
-            (3, 4, 4): [
+            },
+            (3, 4, 4): {
                 'asyncio.tasks.async',
-            ],
-            (3, 5, 0): [
+            },
+            (3, 5, 0): {
                 'fractions.gcd',
                 'inspect.getargvalues',
                 'inspect.formatargspec', 'inspect.formatargvalues',
                 'inspect.getcallargs',
                 'platform.linux_distribution', 'platform.dist',
-            ],
-            (3, 6, 0): [
+            },
+            (3, 6, 0): {
                 'importlib._bootstrap_external.FileLoader.load_module',
-            ],
+            },
         },
     }
 
