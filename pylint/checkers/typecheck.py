@@ -890,18 +890,16 @@ accessed. Python regular expressions are accepted.'}
         # only function, generator and object defining __call__ are allowed
         # Ignore instances of descriptors since astroid cannot properly handle them
         # yet
-        if called and not called.callable():
-            if isinstance(called, astroid.Instance) and (
-                    not has_known_bases(called)
-                    or (isinstance(called.scope(), astroid.ClassDef)
-                        and '__get__' in called.locals)):
-                # Don't emit if we can't make sure this object is callable.
-                pass
-            else:
-                self.add_message('not-callable', node=node,
-                                 args=node.func.as_string())
-
-        self._check_uninferable_call(node)
+        if (not called
+            or called.callable()
+            or (isinstance(called, astroid.Instance)
+               and (not has_known_bases(called)
+                  or (isinstance(called.scope(), astroid.ClassDef)
+                     and '__get__' in called.locals)))):
+            self._check_uninferable_call(node)
+        else:
+            self.add_message('not-callable', node=node,
+                             args=node.func.as_string())
 
         try:
             called, implicit_args, callable_name = _determine_callable(called)
