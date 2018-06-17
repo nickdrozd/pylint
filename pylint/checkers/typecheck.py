@@ -109,9 +109,9 @@ def _is_owner_ignored(owner, name, ignored_classes, ignored_modules):
         return True
 
     ignored_classes = set(ignored_classes)
-    if hasattr(owner, 'qname'):
+    try:
         qname = owner.qname()
-    else:
+    except AttributeError:
         qname = ''
     return any(ignore in (name, qname) for ignore in ignored_classes)
 
