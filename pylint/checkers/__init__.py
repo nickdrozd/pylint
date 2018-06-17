@@ -48,6 +48,8 @@ from pylint.utils import register_plugins
 from pylint.interfaces import UNDEFINED
 
 
+from pylint.interfaces import Confidence
+from typing import Any, Optional
 def table_lines_from_stats(stats, old_stats, columns):
     """get values listed in <columns> from <stats> and <old_stats>,
     and return a formated list of values, designed to be given to a
@@ -84,7 +86,7 @@ class BaseChecker(OptionsProviderMixIn):
     # mark this checker as enabled or not.
     enabled = True
 
-    def __init__(self, linter=None):
+    def __init__(self, linter=None) -> None:
         """checker instances should have the linter as argument
 
         linter is an object implementing ILinter
@@ -93,17 +95,17 @@ class BaseChecker(OptionsProviderMixIn):
         OptionsProviderMixIn.__init__(self)
         self.linter = linter
 
-    def add_message(self, msg_id, line=None, node=None, args=None, confidence=UNDEFINED,
-                    col_offset=None):
+    def add_message(self, msg_id: str, line: Optional[int] = None, node: Optional[Any] = None, args: Optional[Any] = None, confidence: Confidence = UNDEFINED,
+                    col_offset: None = None) -> None:
         """add a message of a given type"""
         self.linter.add_message(msg_id, line, node, args, confidence, col_offset)
 
     # dummy methods implementing the IChecker interface
 
-    def open(self):
+    def open(self) -> None:
         """called before visiting project (i.e set of modules)"""
 
-    def close(self):
+    def close(self) -> None:
         """called after visiting project (i.e set of modules)"""
 
 
@@ -115,7 +117,7 @@ class BaseTokenChecker(BaseChecker):
         raise NotImplementedError()
 
 
-def initialize(linter):
+def initialize(linter) -> None:
     """initialize linter with checkers in this package """
     register_plugins(linter, __path__[0])
 

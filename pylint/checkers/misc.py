@@ -26,6 +26,7 @@ from pylint.checkers import BaseChecker
 from pylint.utils import OPTION_RGX, MessagesHandlerMixIn
 
 
+from pylint.lint import PyLinter
 class ByIdManagedMessagesChecker(BaseChecker):
 
     """checks for messages that are enabled or disabled by id instead of symbol."""
@@ -166,7 +167,7 @@ class EncodingChecker(BaseChecker):
                     self._check_note(notes, lineno + 1, line, module.tolineno)
 
 
-def register(linter):
+def register(linter: PyLinter) -> None:
     """required method to auto register this checker"""
     linter.register_checker(EncodingChecker(linter))
     linter.register_checker(ByIdManagedMessagesChecker(linter))

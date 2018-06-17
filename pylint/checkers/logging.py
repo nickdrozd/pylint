@@ -26,6 +26,9 @@ from pylint.checkers.utils import check_messages
 
 
 
+from astroid.node_classes import Call, Import, ImportFrom
+from astroid.scoped_nodes import Module
+from pylint.lint import PyLinter
 MSGS = {
     'W1201': ('Specify string format arguments as logging function parameters',
               'logging-not-lazy',
@@ -113,7 +116,7 @@ class LoggingChecker(checkers.BaseChecker):
                ),
               )
 
-    def visit_module(self, node): # pylint: disable=unused-argument
+    def visit_module(self, node: Module) -> None: # pylint: disable=unused-argument
         """Clears any state left in this checker from last module checked."""
         # The code being checked can just as easily "import logging as foo",
         # so it is necessary to process the imports and store in this field
@@ -128,7 +131,7 @@ class LoggingChecker(checkers.BaseChecker):
             if len(parts) > 1:
                 self._from_imports[parts[0]] = parts[1]
 
-    def visit_importfrom(self, node):
+    def visit_importfrom(self, node: ImportFrom) -> None:
         """Checks to see if a module uses a non-Python logging module."""
         try:
             logging_name = self._from_imports[node.modname]
@@ -138,14 +141,14 @@ class LoggingChecker(checkers.BaseChecker):
         except KeyError:
             pass
 
-    def visit_import(self, node):
+    def visit_import(self, node: Import) -> None:
         """Checks to see if this module uses Python's built-in logging."""
         for module, as_name in node.names:
             if module in self._logging_modules:
                 self._logging_names.add(as_name or module)
 
     @check_messages(*(MSGS.keys()))
-    def visit_call(self, node):
+    def visit_call(self, node: Call) -> None:
         """Checks calls to logging methods."""
         def is_logging_name():
             return (isinstance(node.func, astroid.Attribute) and
@@ -301,6 +304,6 @@ def _count_supplied_tokens(args):
     return sum(1 for arg in args if not isinstance(arg, astroid.Keyword))
 
 
-def register(linter):
+def register(linter: PyLinter) -> None:
     """Required method to auto-register this checker."""
     linter.register_checker(LoggingChecker(linter))

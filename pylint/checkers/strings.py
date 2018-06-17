@@ -32,6 +32,11 @@ from pylint.checkers import utils
 from pylint.checkers.utils import check_messages
 
 
+from astroid.bases import BoundMethod
+from astroid.node_classes import BinOp, Call
+from astroid.scoped_nodes import Module
+from tokenize import TokenInfo
+from typing import Any, Dict, Iterator, List, Tuple
 _PY3K = sys.version_info[:2] >= (3, 0)
 _PY27 = sys.version_info[:2] == (2, 7)
 
@@ -147,7 +152,7 @@ else:
         return keyname, _field_iterator_convertor(fielditerator)
 
 
-def collect_string_fields(format_string):
+def collect_string_fields(format_string: str) -> Iterator[str]:
     """ Given a format string, return an iterator
     of all the valid format fields. It handles nested fields
     as well.
@@ -180,7 +185,7 @@ def collect_string_fields(format_string):
             return
         raise utils.IncompleteFormatString(format_string)
 
-def parse_format_method_string(format_string):
+def parse_format_method_string(format_string: str) -> Tuple[List[Any], int, int]:
     """
     Parses a PEP 3101 format string, returning a tuple of
     (keys, num_args, manual_pos_arg),
@@ -209,7 +214,7 @@ def parse_format_method_string(format_string):
             num_args += 1
     return keys, num_args, len(manual_pos_arg)
 
-def get_args(call):
+def get_args(call: Call) -> Tuple[int, Dict[Any, Any]]:
     """Get the arguments from the given `Call` node.
 
     Return a tuple, where the first element is the
@@ -247,7 +252,7 @@ class StringFormatChecker(BaseChecker):
     msgs = MSGS
 
     @check_messages(*(MSGS.keys()))
-    def visit_binop(self, node):
+    def visit_binop(self, node: BinOp) -> None:
         if node.op != '%':
             return
         left = node.left
@@ -336,7 +341,7 @@ class StringFormatChecker(BaseChecker):
 
 
     @check_messages(*(MSGS.keys()))
-    def visit_call(self, node):
+    def visit_call(self, node: Call) -> None:
         func = utils.safe_infer(node.func)
         if (isinstance(func, astroid.BoundMethod)
                 and isinstance(func.bound, astroid.Instance)
@@ -352,7 +357,7 @@ class StringFormatChecker(BaseChecker):
                 if _PY27 or _PY3K:
                     self._check_new_format(node, func)
 
-    def _check_new_format(self, node, func):
+    def _check_new_format(self, node: Call, func: BoundMethod) -> None:
         """ Check the new string formatting. """
         # TODO: skip (for now) format nodes which don't have
         #       an explicit string on the left side of the format operation.
@@ -435,7 +440,7 @@ class StringFormatChecker(BaseChecker):
 
         self._check_new_format_specifiers(node, fields, named)
 
-    def _check_new_format_specifiers(self, node, fields, named):
+    def _check_new_format_specifiers(self, node: Call, fields: List[Any], named: Dict[Any, Any]) -> None:
         """
         Check attribute and index access in the format
         string ("{0.a}" and "{0[a]}").
@@ -554,17 +559,17 @@ class StringConstantChecker(BaseTokenChecker):
     # Unicode strings.
     UNICODE_ESCAPE_CHARACTERS = 'uUN'
 
-    def process_module(self, module):
+    def process_module(self, module: Module) -> None:
         self._unicode_literals = 'unicode_literals' in module.future_imports
 
-    def process_tokens(self, tokens):
+    def process_tokens(self, tokens: List[TokenInfo]) -> None:
         for (tok_type, token, (start_row, _), _, _) in tokens:
             if tok_type == tokenize.STRING:
                 # 'token' is the whole un-parsed token; we can look at the start
                 # of it to see whether it's a raw or unicode string etc.
                 self.process_string_token(token, start_row)
 
-    def process_string_token(self, token, start_row):
+    def process_string_token(self, token: str, start_row: int) -> None:
         for i, c in enumerate(token):
             if c in '\'\"':
                 quote_char = c
@@ -580,7 +585,7 @@ class StringConstantChecker(BaseTokenChecker):
         if 'r' not in prefix:
             self.process_non_raw_string_token(prefix, string_body, start_row)
 
-    def process_non_raw_string_token(self, prefix, string_body, start_row):
+    def process_non_raw_string_token(self, prefix: str, string_body: str, start_row: int) -> None:
         """check for bad escapes in a non-raw string.
 
         prefix: lowercase string of eg 'ur' string prefix markers.
@@ -628,7 +633,7 @@ class StringConstantChecker(BaseTokenChecker):
 
 
 
-def register(linter):
+def register(linter) -> None:
     """required method to auto register this checker """
     linter.register_checker(StringFormatChecker(linter))
     linter.register_checker(StringConstantChecker(linter))
