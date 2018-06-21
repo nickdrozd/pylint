@@ -329,15 +329,11 @@ class RefactoringChecker(checkers.BaseTokenChecker):
     visit_tryfinally = visit_tryexcept
     visit_while = visit_tryexcept
 
-    def _check_redefined_argument_from_local(self, name_node):
+    def _check_redefined_argument_from_local(self, name_node, scope):
         if self._dummy_rgx and self._dummy_rgx.match(name_node.name):
             return
         if not name_node.lineno:
             # Unknown position, maybe it is a manually built AST?
-            return
-
-        scope = name_node.scope()
-        if not isinstance(scope, astroid.FunctionDef):
             return
 
         for defined_argument in scope.args.nodes_of_class(astroid.AssignName):
@@ -351,21 +347,36 @@ class RefactoringChecker(checkers.BaseTokenChecker):
     def visit_for(self, node):
         self._check_nested_blocks(node)
 
+        scope = node.scope()
+
+        if not isinstance(scope, astroid.FunctionDef):
+            return
+
         for name in node.target.nodes_of_class(astroid.AssignName):
-            self._check_redefined_argument_from_local(name)
+            self._check_redefined_argument_from_local(name, scope)
 
     @utils.check_messages('redefined-argument-from-local')
     def visit_excepthandler(self, node):
+        scope = node.scope()
+
+        if not isinstance(scope, astroid.FunctionDef):
+            return
+
         if node.name and isinstance(node.name, astroid.AssignName):
-            self._check_redefined_argument_from_local(node.name)
+            self._check_redefined_argument_from_local(node.name, scope)
 
     @utils.check_messages('redefined-argument-from-local')
     def visit_with(self, node):
+        scope = node.scope()
+
+        if not isinstance(scope, astroid.FunctionDef):
+            return
+
         for _, names in node.items:
             if not names:
                 continue
             for name in names.nodes_of_class(astroid.AssignName):
-                self._check_redefined_argument_from_local(name)
+                self._check_redefined_argument_from_local(name, scope)
 
     def _check_superfluous_else_return(self, node):
         if not node.orelse:
