@@ -460,8 +460,14 @@ class BasicErrorChecker(_BasicChecker):
     @utils.check_messages('too-many-star-expressions',
                           'invalid-star-assignment-target')
     def visit_assign(self, node):
-        starred = list(node.targets[0].nodes_of_class(astroid.Starred))
-        if len(starred) > 1:
+        starred = node.targets[0].nodes_of_class(astroid.Starred)
+
+        try:
+            next(starred)
+            next(starred)
+        except StopIteration:
+            pass
+        else:
             self.add_message('too-many-star-expressions', node=node)
 
         # Check *a = b
