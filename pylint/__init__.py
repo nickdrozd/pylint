@@ -16,10 +16,17 @@ def run_pylint():
     """run pylint"""
     from pylint.lint import Run
 
+    import yappi
+
+    yappi.set_clock_type('cpu')
+    yappi.start()
     try:
         Run(sys.argv[1:])
     except KeyboardInterrupt:
         sys.exit(1)
+    finally:
+        stats = yappi.get_func_stats()
+        stats.save('yappi.callgrind', type='callgrind')
 
 
 def run_epylint():
