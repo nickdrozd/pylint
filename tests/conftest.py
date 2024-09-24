@@ -7,17 +7,22 @@
 from __future__ import annotations
 
 import os
-from collections.abc import Callable
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
 from pylint import checkers
-from pylint.checkers import BaseChecker
 from pylint.lint import PyLinter
 from pylint.lint.run import _cpu_count
-from pylint.reporters import BaseReporter
 from pylint.testutils import MinimalTestReporter
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from pylint.checkers import BaseChecker
+    from pylint.reporters import BaseReporter
+
 
 HERE = Path(__file__).parent
 

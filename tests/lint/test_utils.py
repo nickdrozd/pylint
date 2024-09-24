@@ -1,15 +1,22 @@
 # Licensed under the GPL: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # For details: https://github.com/pylint-dev/pylint/blob/main/LICENSE
-# Copyright (c) https://github.com/pylint-dev/pylint/blob/main/CONTRIBUTORS.txt
+# Copyright (c)
+# https://github.com/pylint-dev/pylint/blob/main/CONTRIBUTORS.txt
+
+from __future__ import annotations
 
 import unittest.mock
-from pathlib import Path, PosixPath
+from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
 from pylint.constants import full_version
 from pylint.lint.utils import get_fatal_error_message, prepare_crash_report
 from pylint.testutils._run import _Run as Run
+
+if TYPE_CHECKING:
+    from pathlib import PosixPath
 
 
 def test_prepare_crash_report(tmp_path: PosixPath) -> None:

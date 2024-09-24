@@ -10,12 +10,11 @@ import os
 import shutil
 import sys
 import tempfile
-from collections.abc import Iterator
 from pathlib import Path
 from unittest import mock
+from typing import TYPE_CHECKING
 
 import pytest
-from pytest import CaptureFixture
 
 from pylint import config, testutils
 from pylint.config.find_default_config_files import (
@@ -23,6 +22,11 @@ from pylint.config.find_default_config_files import (
     _toml_has_config,
 )
 from pylint.lint.run import Run
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from pytest import CaptureFixture
 
 
 @pytest.fixture

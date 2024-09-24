@@ -10,9 +10,7 @@ import os
 import pathlib
 import shlex
 import sys
-from collections.abc import Sequence
-from io import BufferedReader
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Protocol
 from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
@@ -21,6 +19,11 @@ from pylint import run_pylint, run_pyreverse, run_symilar
 from pylint.testutils import GenericTestReporter as Reporter
 from pylint.testutils._run import _Run as Run
 from pylint.testutils.utils import _test_cwd
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from io import BufferedReader
+    from typing import Any
 
 
 class _RunCallable(Protocol):  # pylint: disable=too-few-public-methods

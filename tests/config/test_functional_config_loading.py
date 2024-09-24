@@ -17,20 +17,27 @@ default pylint configuration. If you need to append or remove a value use the sp
 ``"functional_append"`` and ``"functional_remove":``. Check the existing code for examples.
 """
 
+from __future__ import annotations
+
 # pylint: disable=redefined-outer-name
 import logging
 import warnings
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
-from pytest import CaptureFixture, LogCaptureFixture
 
 from pylint.testutils.configuration_test import (
-    PylintConfiguration,
     get_expected_configuration,
     get_expected_output,
     run_using_a_configuration_file,
 )
+
+if TYPE_CHECKING:
+    from pytest import CaptureFixture, LogCaptureFixture
+
+    from pylint.testutils.configuration_test import PylintConfiguration
+
 
 HERE = Path(__file__).parent
 USER_SPECIFIC_PATH = HERE.parent.parent

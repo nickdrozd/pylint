@@ -8,15 +8,19 @@ from __future__ import annotations
 
 import os
 import shutil
-from collections.abc import Iterator
 from os.path import exists
+from typing import TYPE_CHECKING
 
 import pytest
-from _pytest.fixtures import SubRequest
 
 from pylint import testutils
 from pylint.checkers import imports, initialize
 from pylint.lint import PyLinter
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from _pytest.fixtures import SubRequest
 
 
 @pytest.fixture

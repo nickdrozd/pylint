@@ -8,10 +8,9 @@ import os
 import re
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any
+from typing import TYPE_CHECKING
 
 import pytest
-from pytest import CaptureFixture
 
 from pylint.config.exceptions import ArgumentPreprocessingError
 from pylint.interfaces import CONFIDENCE_LEVEL_NAMES
@@ -19,6 +18,12 @@ from pylint.lint import Run as LintRun
 from pylint.testutils import create_files
 from pylint.testutils._run import _Run as Run
 from pylint.testutils.configuration_test import run_using_a_configuration_file
+
+if TYPE_CHECKING:
+    from typing import Any
+
+    from pytest import CaptureFixture
+
 
 HERE = Path(__file__).parent.absolute()
 REGRTEST_DATA_DIR = HERE / ".." / "regrtest_data"

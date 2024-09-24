@@ -6,13 +6,18 @@
 
 from __future__ import annotations
 
-from collections.abc import ValuesView
+from typing import TYPE_CHECKING
 
 import pytest
 
 from pylint.checkers import BaseChecker
 from pylint.lint.pylinter import PyLinter
-from pylint.message import MessageDefinition, MessageDefinitionStore, MessageIdStore
+from pylint.message import MessageDefinitionStore, MessageIdStore
+
+if TYPE_CHECKING:
+    from collections.abc import ValuesView
+
+    from pylint.message import MessageDefinition
 
 
 @pytest.fixture

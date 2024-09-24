@@ -2,9 +2,14 @@
 # For details: https://github.com/pylint-dev/pylint/blob/main/LICENSE
 # Copyright (c) https://github.com/pylint-dev/pylint/blob/main/CONTRIBUTORS.txt
 
-from pathlib import Path
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from pylint.testutils._run import _Run as Run
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def test_fall_back_on_base_config(tmp_path: Path) -> None:

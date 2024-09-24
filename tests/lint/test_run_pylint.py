@@ -2,12 +2,18 @@
 # For details: https://github.com/pylint-dev/pylint/blob/main/LICENSE
 # Copyright (c) https://github.com/pylint-dev/pylint/blob/main/CONTRIBUTORS.txt
 
-from pathlib import Path
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import pytest
-from _pytest.capture import CaptureFixture
 
 from pylint import run_pylint
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from _pytest.capture import CaptureFixture
 
 
 def test_run_pylint_with_invalid_argument(capsys: CaptureFixture[str]) -> None:

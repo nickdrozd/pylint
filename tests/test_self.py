@@ -16,12 +16,11 @@ import sys
 import tempfile
 import textwrap
 import warnings
-from collections.abc import Iterator
 from copy import copy
 from io import BytesIO, StringIO
 from os.path import abspath, dirname, join
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, TextIO
+from typing import TYPE_CHECKING
 from unittest import mock
 from unittest.mock import patch
 
@@ -30,7 +29,6 @@ import pytest
 from pylint import extensions, modify_sys_path
 from pylint.constants import MAIN_CHECKER_NAME, MSG_TYPES_STATUS
 from pylint.lint.pylinter import PyLinter
-from pylint.message import Message
 from pylint.reporters import BaseReporter
 from pylint.reporters.json_reporter import JSON2Reporter
 from pylint.reporters.text import ColorizedTextReporter, GithubReporter, TextReporter
@@ -51,6 +49,10 @@ else:
 
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
+    from typing import Any, TextIO
+
+    from pylint.message import Message
     from pylint.reporters.ureports.nodes import Section
 
 HERE = abspath(dirname(__file__))

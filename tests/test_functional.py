@@ -7,26 +7,27 @@
 from __future__ import annotations
 
 import sys
-from collections.abc import Iterator
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
-from _pytest.config import Config
 
 from pylint import testutils
 from pylint.constants import PY312_PLUS
 from pylint.lint.pylinter import MANAGER
 from pylint.testutils import UPDATE_FILE, UPDATE_OPTION
 from pylint.testutils.functional import (
-    FunctionalTestFile,
     LintModuleOutputUpdate,
     get_functional_test_files_from_directory,
 )
 from pylint.utils import HAS_ISORT_5
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
+
     from pylint.lint import PyLinter
+    from pylint.testutils.functional import FunctionalTestFile
+    from _pytest.config import Config
 
 FUNCTIONAL_DIR = Path(__file__).parent.resolve() / "functional"
 

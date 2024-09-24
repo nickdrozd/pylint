@@ -11,7 +11,6 @@ import os
 import re
 import sys
 import tempfile
-from collections.abc import Iterator
 from contextlib import contextmanager
 from io import StringIO
 from os import chdir, getcwd
@@ -19,12 +18,11 @@ from os.path import abspath, dirname, join, sep
 from pathlib import Path
 from shutil import copy, rmtree
 from unittest import mock
+from typing import TYPE_CHECKING
 
 import astroid
 import platformdirs
 import pytest
-from astroid import nodes
-from pytest import CaptureFixture
 
 from pylint import checkers, constants, exceptions, interfaces, lint, testutils
 from pylint.checkers.utils import only_required_for_messages
@@ -48,6 +46,14 @@ from pylint.utils import (
     print_full_documentation,
     tokenize_module,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from astroid import nodes
+
+    from pytest import CaptureFixture
+
 
 if os.name == "java":
     if os.name == "nt":

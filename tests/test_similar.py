@@ -9,13 +9,17 @@ import re
 import warnings
 from io import StringIO
 from os.path import abspath, dirname, join
-from typing import TextIO
+from typing import TYPE_CHECKING
 
 import pytest
 
 from pylint.reporters.text import TextReporter
 from pylint.testutils._run import _Run as Run
 from pylint.testutils.utils import _patch_streams
+
+if TYPE_CHECKING:
+    from typing import TextIO
+
 
 HERE = abspath(dirname(__file__))
 DATA = join(HERE, "regrtest_data", "duplicate_code")

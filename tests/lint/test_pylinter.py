@@ -2,16 +2,23 @@
 # For details: https://github.com/pylint-dev/pylint/blob/main/LICENSE
 # Copyright (c) https://github.com/pylint-dev/pylint/blob/main/CONTRIBUTORS.txt
 
+from __future__ import annotations
+
 import os
-from pathlib import Path
-from typing import Any, NoReturn
 from unittest import mock
 from unittest.mock import patch
+from typing import TYPE_CHECKING
 
-from pytest import CaptureFixture
-
-from pylint.lint.pylinter import MANAGER, PyLinter
+from pylint.lint.pylinter import MANAGER
 from pylint.utils import FileState
+
+if TYPE_CHECKING:
+    from pathlib import Path
+    from typing import Any, NoReturn
+
+    from pytest import CaptureFixture
+
+    from pylint.lint.pylinter import PyLinter
 
 
 def raise_exception(*args: Any, **kwargs: Any) -> NoReturn:

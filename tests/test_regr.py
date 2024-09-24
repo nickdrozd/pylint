@@ -12,15 +12,19 @@ from __future__ import annotations
 
 import os
 import sys
-from collections.abc import Callable, Iterator
 from os.path import abspath, dirname, join
-from typing import cast
+from typing import cast, TYPE_CHECKING
 
 import pytest
 
 from pylint import testutils
-from pylint.lint.pylinter import PyLinter
 from pylint.utils.linterstats import LinterStats
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterator
+
+    from pylint.lint.pylinter import PyLinter
+
 
 REGR_DATA = join(dirname(abspath(__file__)), "regrtest_data")
 sys.path.insert(1, REGR_DATA)

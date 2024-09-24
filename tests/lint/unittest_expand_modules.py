@@ -7,16 +7,20 @@ from __future__ import annotations
 import copy
 import os
 import re
-from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
 from pylint.checkers import BaseChecker
 from pylint.lint.expand_modules import _is_in_ignore_list_re, expand_modules
 from pylint.testutils import CheckerTestCase, set_config
-from pylint.typing import MessageDefinitionTuple, ModuleDescriptionDict
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from pylint.typing import MessageDefinitionTuple, ModuleDescriptionDict
 
 
 def test__is_in_ignore_list_re_match() -> None:
