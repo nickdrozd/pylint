@@ -7,12 +7,22 @@ from __future__ import annotations
 import argparse
 import configparser
 import shlex
-from typing import TYPE_CHECKING, NamedTuple, TypedDict
+from typing import TYPE_CHECKING, NamedTuple, Protocol, TypedDict
 
 from pylint.pyreverse.main import DEFAULT_COLOR_PALETTE
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    from pylint.pyreverse.inspector import Project
+
+
+class GetProjectCallable(Protocol):
+    def __call__(
+        self,
+        module: str,
+        name: str | None = "No Name",
+    ) -> Project: ...  # pragma: no cover
 
 
 # This class could and should be replaced with a simple dataclass when support for Python < 3.7 is dropped.
