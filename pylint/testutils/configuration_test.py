@@ -143,6 +143,6 @@ def run_using_a_configuration_file(
     # needed to properly set up messages inclusion/exclusion
     # in `_msg_states`, used by `is_message_enabled`.
     check = "pylint.lint.pylinter.check_parallel"
-    with unittest.mock.patch(check):
+    with unittest.mock.patch(check):  # type: ignore[attr-defined]
         runner = Run(args, exit=False)
     return runner

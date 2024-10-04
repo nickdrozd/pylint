@@ -228,7 +228,7 @@ class ColorizedTextReporter(TextReporter):
         ansi_terms = ["xterm-16color", "xterm-256color"]
         if os.environ.get("TERM") not in ansi_terms:
             if sys.platform == "win32":
-                # pylint: disable=import-outside-toplevel
+                # pylint: disable = import-outside-toplevel, import-error
                 import colorama
 
                 self.out = colorama.AnsiToWin32(self.out)
