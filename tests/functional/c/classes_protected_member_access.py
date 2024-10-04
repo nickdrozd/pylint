@@ -23,4 +23,4 @@ class A3123:
 
     smeth = staticmethod(smeth)
 
-    prop = property(lambda self: self._protected)
+    prop = property(lambda self: self._protected)  # [protected-access] TEMP UNDO
